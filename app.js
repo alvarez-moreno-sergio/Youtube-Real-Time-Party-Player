@@ -5,7 +5,6 @@ const io = require('socket.io').listen(http);
 const socketServer = require('./lib/socket_server');
 
 app.use(express.static('./views'));
-// app.get('/');
 
 io.on('connection', function (socket) {
     socketServer.eventsHandler(socket);

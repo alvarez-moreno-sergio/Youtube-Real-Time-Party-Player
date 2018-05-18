@@ -15,3 +15,7 @@ iframe {
 #inputURL {
     width: 66% !important;
 }
+
+.room-link input {
+    width: 100%;
+}
