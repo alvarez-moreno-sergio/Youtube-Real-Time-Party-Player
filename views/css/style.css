@@ -30,3 +30,11 @@ iframe {
      top: 25%;
      left: 35%;
 }
+
+.hidden {
+    display: none;
+}
+
+h1 {
+    margin-bottom: 10%;
+}

@@ -6,15 +6,17 @@ let remotePausedVideo = false;
 
 window.onload = function() {
     socket = io();
+    socket.on('joinResult', (response)=>shareLink(response));
+
     let url = document.location.href;
     let params = url.indexOf('?room=') !== -1? url.split('?room=')[1] : -1;
-
     switch (params){
         case -1:
             // no room joining. loading form
             loadForm();
             break;
         default:
+            dontYouMissHome();
             $('#youtubeAPI').ready(function(){
                 if (this.readyState === 'complete') {
                     createYTVideoPlayer(params);
@@ -34,11 +36,11 @@ window.onload = function() {
     });
 };
 function dontYouMissHome(){
-    $('.home').removeClass('invisible');
+    $('#home').removeClass('hidden');
 }
 
 function loadForm(){
-    $('.invisible:not(".home")').toggleClass('invisible');
+    $('.hidden:not("#home")').toggleClass('hidden');
 }
 
 function copyValueToClipboard(element) {
@@ -51,31 +53,27 @@ function copyValueToClipboard(element) {
 
 function newRoomEventHandler() {
     socket.emit('joinRoom', video_id);
+}
 
-    socket.on('joinResult', function (response) {
-        $(".main-div").append(`
+function shareLink (response){
+    $(".main-div").append(`
                                 <div class="container-fluid">
                                     <div class="row">
-                                        <div class="col-md-7 offset-md-2 room-link">
+                                        <div class="col-md-12 room-link">
                                             <input value="${response.url}" readonly />
                                             <a href="#">Copy me!</a>
                                         </div>
                                      </div>
                                 </div>
         `);
-        $('.room-link a').on('click', ()=>copyValueToClipboard($('.room-link input')));
-    });
+    $('.room-link a').on('click', ()=>copyValueToClipboard($('.room-link input')));
 }
 
 function processURL(){
     console.log(socket);
     let inputURL = $('#inputURL').val();
-    
-    //Link coming from mobile
-	if (inputURL.indexOf(".be/") !== -1) {
-		inputURL = inputURL.split(".be/")[1];
-	}
-   
+
+
     $(".search").hide('slow');
 
     let parameters =`src='${inputURL}' frameborder='0' allowfullscreen`;
@@ -114,7 +112,6 @@ function createYTVideoPlayer(videoURL){
             'onStateChange': onPlayerStateChange
         }
     });
-    dontYouMissHome();
 }
 
 // autoplay video

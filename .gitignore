@@ -62,3 +62,6 @@ typings/
 
 # IDEA ignore files
 .idea/
+
+# HEROKU ignore files
+Procfile
