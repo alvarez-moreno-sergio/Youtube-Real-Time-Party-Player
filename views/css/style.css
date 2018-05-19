@@ -1,0 +1,40 @@
+.container-fluid {
+    width: 75% !important;
+    margin-top: 2em;
+}
+
+.input-group-btn {
+    margin-left: 5%;
+}
+
+iframe {
+    width: 853px;
+    height: 385px;
+}
+
+#inputURL {
+    width: 66% !important;
+}
+
+.room-link input {
+    width: 100%;
+}
+
+#dialog {
+    display: none;
+}
+
+#dialog {
+    /*display: block;*/
+     position: absolute;
+     top: 25%;
+     left: 35%;
+}
+
+.hidden {
+    display: none;
+}
+
+h1 {
+    margin-bottom: 10%;
+}

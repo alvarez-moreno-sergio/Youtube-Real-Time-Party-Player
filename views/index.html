@@ -1,0 +1,50 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+    <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+    <link rel="stylesheet" href="css/style.css">
+    <script type="text/javascript" src="http://www.youtube.com/player_api"></script>
+    <title>Youtube Real Time Party Player</title>
+</head>
+<body>
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-md-12 main-div">
+                <h1 class="text-center">Youtube Real Time Party Player</h1>
+                <form action="#" method="POST" onsubmit="return processURL()">
+                    <div class="input-group search hidden">
+                        <input value="https://www.youtube.com/watch?v=dQw4w9WgXcQ" type="text" id="inputURL" name="inputURL" class="form-control" placeholder="Youtube URL" required autofocus autocomplete="off">
+                        <span class="input-group-btn">
+                            <button class="btn btn-dark btn-lg btn-primary btn-block" data-toggle="modal" data-target="#dialog" type="submit">Create room!</button>
+                        </span>
+                    </div>
+                </form>
+                <div id="home" class="hidden col-md-12">
+                    <a id="homeLink" href="http://192.168.1.49:3000">
+                        <label for="homeLink">Don't you miss home?</label>
+                    </a>
+                </div>
+                <div id='player'></div>
+                <script id='youtubeAPI' src='http://www.youtube.com/player_api'></script>
+            </div>
+        </div>
+    </div>
+
+    <div id="dialog" class="modal-dialog " role="document">
+        <img src="img/loading.gif">
+    </div>
+
+    <!-- Optional JavaScript -->
+    <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+    <script src="https://cdn.socket.io/socket.io-1.4.5.js"></script>
+    <script type="text/javascript" src="js/script.js"></script>
+</body>
+</html>
