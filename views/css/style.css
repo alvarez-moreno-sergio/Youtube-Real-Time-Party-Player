@@ -19,3 +19,14 @@ iframe {
 .room-link input {
     width: 100%;
 }
+
+#dialog {
+    display: none;
+}
+
+#dialog {
+    /*display: block;*/
+     position: absolute;
+     top: 25%;
+     left: 35%;
+}

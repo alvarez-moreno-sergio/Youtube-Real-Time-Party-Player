@@ -7,6 +7,7 @@
 
     <!-- Bootstrap CSS -->
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+    <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
     <link rel="stylesheet" href="css/style.css">
     <script type="text/javascript" src="http://www.youtube.com/player_api"></script>
     <title>Youtube Real Time Party Player</title>
@@ -20,7 +21,7 @@
                     <div class="input-group search invisible">
                         <input value="https://www.youtube.com/watch?v=dQw4w9WgXcQ" type="text" id="inputURL" name="inputURL" class="form-control" placeholder="Youtube URL" required autofocus autocomplete="off">
                         <span class="input-group-btn">
-                            <button class="btn btn-lg btn-primary btn-block" type="submit">Go!</button>
+                            <button class="btn btn-lg btn-primary btn-block" data-toggle="modal" data-target="#dialog" type="submit">Go!</button>
                         </span>
                     </div>
                 </form>
@@ -31,19 +32,19 @@
                 </div>
                 <div id='player'></div>
                 <script id='youtubeAPI' src='http://www.youtube.com/player_api'></script>
-
-
             </div>
         </div>
     </div>
 
+    <div id="dialog" class="modal-dialog " role="document">
+        <img src="img/loading.gif">
+    </div>
+
     <!-- Optional JavaScript -->
     <!-- jQuery first, then Popper.js, then Bootstrap JS -->
-    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
-    <!--<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>-->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
-
-    <script type="text/javascript" src="js/script.js"></script>
     <script src="https://cdn.socket.io/socket.io-1.4.5.js"></script>
+    <script type="text/javascript" src="js/script.js"></script>
 </body>
 </html>

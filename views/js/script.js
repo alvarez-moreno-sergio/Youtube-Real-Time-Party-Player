@@ -3,6 +3,7 @@ let video_id;
 let socket;
 let remotePlayedVideo = false;
 let remotePausedVideo = false;
+
 window.onload = function() {
     socket = io();
     let url = document.location.href;
@@ -14,15 +15,12 @@ window.onload = function() {
             loadForm();
             break;
         default:
-            // abrir loading
             $('#youtubeAPI').ready(function(){
                 if (this.readyState === 'complete') {
                     createYTVideoPlayer(params);
                     socket.emit('joinRoom', params);
                 }
-                // cerrar loading
             });
-
     }
 
     socket.on('videoPlaying', function (data) {
@@ -40,14 +38,6 @@ function dontYouMissHome(){
 }
 
 function loadForm(){
-    // let elements = $(`
-    //                 <input class="hide" type="text" id="inputURL" name="inputURL" class="form-control" placeholder="Youtube URL" required autofocus autocomplete="on">
-    //                 <span class="hide" class="input-group-btn">
-    //                     <button class="hide" class="btn btn-lg btn-primary btn-block" type="submit">Go!</button>
-    //                 </span>
-    // `);
-    // $('.search').append(elements);
-
     $('.invisible:not(".home")').toggleClass('invisible');
 }
 
@@ -96,6 +86,7 @@ function processURL(){
 }
 
 function createYTVideoPlayer(videoURL){
+    $('#dialog').modal('show');
     let roomJoin = videoURL.indexOf('v=') === -1;
     if (!roomJoin){
         video_id = videoURL.split('v=')[1];
@@ -124,6 +115,8 @@ function createYTVideoPlayer(videoURL){
 
 // autoplay video
 function onPlayerReady(event) {
+    $('#dialog').modal("hide")
+
     // event.target.playVideo();
 }
 
