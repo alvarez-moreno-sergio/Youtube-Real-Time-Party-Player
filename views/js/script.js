@@ -84,6 +84,8 @@ function processURL(){
     $(".search").remove();
     createYTVideoPlayer(inputURL);
     newRoomEventHandler();
+
+    $('#home').toggleClass('hidden');
     return false;
 }
 
