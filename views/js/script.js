@@ -80,8 +80,12 @@ function newRoomEventHandler() {
 function processURL(){
     console.log(socket);
     let inputURL = $('#inputURL').val();
-
-
+    
+    //Link coming from mobile
+	if (inputURL.indexOf(".be/") !== -1) {
+		inputURL = inputURL.split(".be/")[1];
+	}
+   
     $(".search").hide('slow');
 
     let parameters =`src='${inputURL}' frameborder='0' allowfullscreen`;
