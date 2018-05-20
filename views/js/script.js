@@ -1,30 +1,19 @@
 let player;
 let video_id;
 let socket;
+let param;
 let remotePlayedVideo = false;
 let remotePausedVideo = false;
 
 window.onload = function() {
     socket = io();
+
+    socketEventsHandler();
+    loadPageMode();
+};
+
+function socketEventsHandler() {
     socket.on('joinResult', (response)=>shareLink(response));
-
-    let url = document.location.href;
-    let params = url.indexOf('?room=') !== -1? url.split('?room=')[1] : -1;
-    switch (params){
-        case -1:
-            // no room joining. loading form
-            loadForm();
-            break;
-        default:
-            dontYouMissHome();
-            $('#youtubeAPI').ready(function(){
-                if (this.readyState === 'complete') {
-                    createYTVideoPlayer(params);
-                    socket.emit('joinRoom', params);
-                }
-            });
-    }
-
     socket.on('videoPlaying', function (data) {
         remotePlayedVideo = true;
         player.playVideo();
@@ -34,7 +23,36 @@ window.onload = function() {
         remotePausedVideo = true;
         player.pauseVideo();
     });
-};
+}
+
+function newRoomEventHandler() {
+    socket.emit('joinRoom', video_id);
+}
+
+function loadPageMode() {
+    let url = document.location.href;
+    param = url.indexOf('?room=') !== -1? url.split('?room=')[1] : -1;
+    switch (param){
+        case -1:
+            // no room joining. loading form
+            loadForm();
+            break;
+        default:
+            // loaded from room link
+            dontYouMissHome();
+            onYoutubePlayerAPIReady();
+    }
+}
+
+function onYoutubePlayerAPIReady(){
+    $('#youtubeAPI').ready(function(){
+        if (this.readyState === 'complete') {
+            createYTVideoPlayer(param);
+            socket.emit('joinRoom', param);
+        }
+    });
+}
+
 function dontYouMissHome(){
     $('#home').removeClass('hidden');
 }
@@ -51,42 +69,37 @@ function copyValueToClipboard(element) {
     $temp.remove();
 }
 
-function newRoomEventHandler() {
-    socket.emit('joinRoom', video_id);
-}
-
 function shareLink (response){
+    let port = window.location.port === ""?80:window.location.port;
+    let domainURL = `https://${window.location.host}:${port}/`;
+
     $(".main-div").append(`
                                 <div class="container-fluid">
                                     <div class="row">
                                         <div class="col-md-12 room-link">
-                                            <input value="${response.url}" readonly />
+                                            <input value="" readonly />
                                             <a href="#">Copy me!</a>
                                         </div>
                                      </div>
                                 </div>
         `);
+    $(".room-link input").val(`${domainURL}?${response.param}`);
     $('.room-link a').on('click', ()=>copyValueToClipboard($('.room-link input')));
 }
 
 function processURL(){
-    console.log(socket);
     let inputURL = $('#inputURL').val();
 
-
-    $(".search").hide('slow');
-
-    let parameters =`src='${inputURL}' frameborder='0' allowfullscreen`;
-    let iframeElement = $(`<iframe ${parameters}></iframe>`);
-    // <iframe src="http://www.youtube.com/embed/oHg5SJYRHA0?rel=0&autoplay=1" frameborder="0" allowfullscreen></iframe>
-
-    // $('.main-div').append(iframeElement);
-    $(".search").remove();
+    removeElementFromDOM($(".search"));
     createYTVideoPlayer(inputURL);
     newRoomEventHandler();
 
     $('#home').toggleClass('hidden');
     return false;
+}
+
+function removeElementFromDOM(element){
+    $(element).hide('slow');
 }
 
 function createYTVideoPlayer(videoURL){
@@ -102,9 +115,6 @@ function createYTVideoPlayer(videoURL){
         video_id = videoURL;
     }
 
-    // $('.main-div').append($(`<div id='player'></div>`));
-    // $('.main-div').append($(`<script src='http://www.youtube.com/player_api'></script>`));
-
     player = new YT.Player('player', {
         height: '390',
         width: '640',
@@ -116,14 +126,10 @@ function createYTVideoPlayer(videoURL){
     });
 }
 
-// autoplay video
 function onPlayerReady(event) {
-    $('#dialog').modal("hide")
-
-    // event.target.playVideo();
+    $('#dialog').modal("hide");
 }
 
-// when video ends
 function onPlayerStateChange(event) {
     if (event.data === YT.PlayerState.PLAYING) {
         if (!remotePlayedVideo) {
