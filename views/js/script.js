@@ -58,7 +58,7 @@ function dontYouMissHome(){
 }
 
 function loadForm(){
-    $('.hidden:not("#home")').toggleClass('hidden');
+    $('.hidden:not("#home,#player")').toggleClass('hidden');
 }
 
 function copyValueToClipboard(element) {
@@ -92,7 +92,7 @@ function shareLink (response){
 function processURL(){
     let inputURL = $('#inputURL').val();
 
-    removeElementFromDOM($(".search"));
+    hideElement($(".search"));
     createYTVideoPlayer(inputURL);
     newRoomEventHandler();
 
@@ -100,8 +100,12 @@ function processURL(){
     return false;
 }
 
-function removeElementFromDOM(element){
+function hideElement(element){
     $(element).hide('slow');
+}
+
+function showHiddenElement(element) {
+    $(element).show("slow");
 }
 
 function createYTVideoPlayer(videoURL){
@@ -129,6 +133,7 @@ function createYTVideoPlayer(videoURL){
 }
 
 function onPlayerReady(event) {
+    showHiddenElement($("#player"));
     $('#dialog').modal("hide");
 }
 
