@@ -70,8 +70,8 @@ function copyValueToClipboard(element) {
 }
 
 function shareLink (response){
-    let port = window.location.port === ""?80:window.location.port;
-    let domainURL = `https://${window.location.host}:${port}/`;
+    let port = window.location.port === ":"?`:${window.location.port}`:'';
+    let domainURL = `${window.location.host}${port}/`;
 
     $(".main-div").append(`
                                 <div class="container-fluid">
@@ -83,7 +83,9 @@ function shareLink (response){
                                      </div>
                                 </div>
         `);
+
     $(".room-link input").val(`${domainURL}?${response.param}`);
+    $("#homeLink").attr('href','/');
     $('.room-link a').on('click', ()=>copyValueToClipboard($('.room-link input')));
 }
 
