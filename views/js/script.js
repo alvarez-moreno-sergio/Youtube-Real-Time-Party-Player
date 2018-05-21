@@ -8,9 +8,24 @@ let remotePausedVideo = false;
 window.onload = function() {
     socket = io();
 
+    homeHandler();
     socketEventsHandler();
     loadPageMode();
 };
+
+function homeHandler() {
+    $("#home a").on('click',()=>{
+        hideElement($("#home, #player, .room-link"));
+        $("#player").remove();
+        loadForm();
+
+        player = undefined;
+        try {
+            event.preventDefault();
+        }
+        catch (e) {}
+    });
+}
 
 function socketEventsHandler() {
     socket.on('joinResult', (response)=>shareLink(response));
@@ -54,39 +69,32 @@ function onYoutubePlayerAPIReady(){
 }
 
 function dontYouMissHome(){
-    $('#home').removeClass('hidden');
+    showHiddenElement($('#home'));
 }
 
 function loadForm(){
-    $('.hidden:not("#home,#player")').toggleClass('hidden');
+    showHiddenElement($(".search"));
 }
 
-function copyValueToClipboard(element) {
+function copyValueToClipboard(element, event) {
     let $temp = $("<input>");
     $("body").append($temp);
     $temp.val($(element).val()).select();
     document.execCommand("copy");
     $temp.remove();
+
+    try {
+        event.preventDefault();
+    }
+    catch (e) {}
 }
 
 function shareLink (response){
     let port = window.location.port === ":"?`:${window.location.port}`:'';
     let domainURL = `${window.location.host}${port}/`;
 
-    $(".main-div").append(`
-                                <div class="container-fluid">
-                                    <div class="row">
-                                        <div class="col-md-12 room-link">
-                                            <input value="" readonly />
-                                            <a href="#">Copy me!</a>
-                                        </div>
-                                     </div>
-                                </div>
-        `);
-
     $(".room-link input").val(`${domainURL}?${response.param}`);
-    $("#homeLink").attr('href','/');
-    $('.room-link a').on('click', ()=>copyValueToClipboard($('.room-link input')));
+    $('.room-link a').on('click', (event)=>copyValueToClipboard($('.room-link input'), event));
 }
 
 function processURL(){
@@ -96,7 +104,7 @@ function processURL(){
     createYTVideoPlayer(inputURL);
     newRoomEventHandler();
 
-    $('#home').toggleClass('hidden');
+    showHiddenElement($('#home'));
     return false;
 }
 
@@ -110,6 +118,8 @@ function showHiddenElement(element) {
 
 function createYTVideoPlayer(videoURL){
     $('#dialog').modal('show');
+    $(".home").append($("<div id='player' class='hidden'></div>"));
+
     let roomJoin = videoURL.indexOf('v=') === -1;
     if (!roomJoin){
         video_id = videoURL.split('v=')[1];
@@ -134,6 +144,7 @@ function createYTVideoPlayer(videoURL){
 
 function onPlayerReady(event) {
     showHiddenElement($("#player"));
+    showHiddenElement($(".room-link"));
     $('#dialog').modal("hide");
 }
 

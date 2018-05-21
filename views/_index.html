@@ -17,40 +17,39 @@
     <title>Youtube Real Time Party Player</title>
 </head>
 <body>
-    <div class="grid-container">
-        <div data-area="chat"></div>
-        <div data-area="members"></div>
-        <div data-area="aux"></div>
-
-        <div data-area="content">
-            <div class="main-div">
-                <h3 class="text-center">Youtube Real Time Party Player</h3>
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-md-12 main-div">
+                <h1 class="text-center">Youtube Real Time Party Player</h1>
                 <form action="#" method="POST" onsubmit="return processURL()">
-                    <div class="search hidden">
-                        <!--<span>-->
-                            <input value="https://www.youtube.com/watch?v=dQw4w9WgXcQ" type="text" id="inputURL" name="inputURL" class="" placeholder="Youtube URL" required autofocus autocomplete="off">
-                            <button class="btn btn-dark" data-toggle="modal" data-target="#dialog" type="submit">Create room!</button>
-                        <!--</span>-->
+                    <div class="input-group search hidden">
+                        <input value="https://www.youtube.com/watch?v=dQw4w9WgXcQ" type="text" id="inputURL" name="inputURL" class="form-control" placeholder="Youtube URL" required autofocus autocomplete="off">
+                        <span class="input-group-btn">
+                            <button class="btn btn-dark btn-lg btn-primary btn-block" data-toggle="modal" data-target="#dialog" type="submit">Create room!</button>
+                        </span>
                     </div>
                 </form>
-                <div class="home">
+
+                <div class="row">
                     <div id="home" class="hidden">
-                        <a id="homeLink" href="/"><i>Don't you miss home?</i></a>
+                        <a id="homeLink" href="">
+                            <i>Don't you miss home?</i>
+                        </a>
                     </div>
-                    <div id="dialog" class="hidden" role="document">
-                        <img src="img/loading.gif">
-                    </div>
+                    <div id='player' class="hidden"></div>
                     <script id='youtubeAPI' src='http://www.youtube.com/player_api'></script>
-                </div>
-                <div class="room-link hidden">
-                    <input value="" readonly />
-                    <a href="#">Copy me!</a>
                 </div>
             </div>
         </div>
     </div>
 
 
+
+
+
+    <div id="dialog" class="modal-dialog hidden" role="document">
+        <img src="img/loading.gif">
+    </div>
 
     <!-- Optional JavaScript -->
     <!-- jQuery first, then Popper.js, then Bootstrap JS -->
