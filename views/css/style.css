@@ -4,13 +4,27 @@
 .hidden {
     display: none;
 }
+.room-link input {
+    width: 75%;
+}
+.search {
+    margin-top: 28%;
+    display: inline-block;
+}
+.main-div {
+    position: relative;
+    top: 3em;
+    text-align: center;
+}
 /* =========================================================== */
 #player {
     margin-top: 2em;
 }
-.room-link input {
-    width: 75%;
+#dialog {
+    position: absolute;
+    left: 30%;
 }
-h3{
+h3 {
     margin-bottom: 1em;
+    text-align: center;
 }

@@ -15,11 +15,13 @@ window.onload = function() {
 
 function homeHandler() {
     $("#home a").on('click',()=>{
-        hideElement($("#home, #player, .room-link"));
-        $("#player").remove();
-        loadForm();
+        hideElement($("#home, #player, .room-link"), ()=>{
+            $("#player").remove();
+            loadForm();
 
-        player = undefined;
+            player = undefined;
+        });
+
         try {
             event.preventDefault();
         }
@@ -54,8 +56,10 @@ function loadPageMode() {
             break;
         default:
             // loaded from room link
-            dontYouMissHome();
-            onYoutubePlayerAPIReady();
+            dontYouMissHome(
+                // on Complete
+                onYoutubePlayerAPIReady
+            );
     }
 }
 
@@ -68,12 +72,14 @@ function onYoutubePlayerAPIReady(){
     });
 }
 
-function dontYouMissHome(){
-    showHiddenElement($('#home'));
+function dontYouMissHome(onComplete=null){
+    showHiddenElement($('#home'), onComplete);
 }
 
 function loadForm(){
-    showHiddenElement($(".search"));
+    showHiddenElement($(".search"), ()=>{
+        $("#inputURL").focus();
+    });
 }
 
 function copyValueToClipboard(element, event) {
@@ -100,20 +106,22 @@ function shareLink (response){
 function processURL(){
     let inputURL = $('#inputURL').val();
 
-    hideElement($(".search"));
-    createYTVideoPlayer(inputURL);
-    newRoomEventHandler();
+    hideElement($(".search"), ()=>{
+        createYTVideoPlayer(inputURL);
+        newRoomEventHandler();
 
-    showHiddenElement($('#home'));
+        showHiddenElement($('#home'));
+    });
+
     return false;
 }
 
-function hideElement(element){
-    $(element).hide('slow');
+function hideElement(element, onComplete = null){
+    $(element).hide('slow', onComplete);
 }
 
-function showHiddenElement(element) {
-    $(element).show("slow");
+function showHiddenElement(element, onComplete = null) {
+    $(element).show("slow",onComplete);
 }
 
 function createYTVideoPlayer(videoURL){
