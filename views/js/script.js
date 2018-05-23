@@ -77,7 +77,8 @@ function dontYouMissHome(onComplete=null){
 }
 
 function loadForm(){
-    showHiddenElement($(".search"), ()=>{
+    showHiddenElement($(".search:not('.search button')"), ()=>{
+        showHiddenElement($(".search button"));
         $("#inputURL").focus();
     });
 }
@@ -107,6 +108,7 @@ function processURL(){
     let inputURL = $('#inputURL').val();
 
     hideElement($(".search"), ()=>{
+        hideElement($(".search button"));
         createYTVideoPlayer(inputURL);
         newRoomEventHandler();
 
@@ -151,8 +153,11 @@ function createYTVideoPlayer(videoURL){
 }
 
 function onPlayerReady(event) {
-    showHiddenElement($("#player"));
-    showHiddenElement($(".room-link"));
+    $('#dialog').on('hidden.bs.modal', function (e) {
+        showHiddenElement($("#player"));
+        showHiddenElement($(".room-link"));
+    });
+
     $('#dialog').modal("hide");
 }
 
