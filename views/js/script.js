@@ -15,6 +15,7 @@ window.onload = function() {
 
 function homeHandler() {
     $("#home a").on('click',()=>{
+        socket.emit('leaveRoom',video_id);
         hideElement($("#home, #player, .room-link"), ()=>{
             $("#player").remove();
             loadForm();
@@ -39,6 +40,9 @@ function socketEventsHandler() {
     socket.on('videoPaused', function (data) {
         remotePausedVideo = true;
         player.pauseVideo();
+    });
+    socket.on('message', (data)=>{
+        alert(`[${data.from}]: ${data.message}`);
     });
 }
 
@@ -153,6 +157,7 @@ function createYTVideoPlayer(videoURL){
 }
 
 function onPlayerReady(event) {
+    newRoomEventHandler();
     $('#dialog').on('hidden.bs.modal', function (e) {
         showHiddenElement($("#player"));
         showHiddenElement($(".room-link"));
@@ -176,4 +181,30 @@ function onPlayerStateChange(event) {
         else
             remotePausedVideo = false;
     }
+}
+
+function showMembersInCurrentRoom() {
+    let members = getSocketsIdInCurrentRoom();
+    members.then((socketIDs)=>{
+        socketIDs.forEach((elemID)=> {
+            $('#members').append($(`<li>${elemID}</li>`));
+        });
+    });
+}
+
+function sendMessage(message) {
+    socket.emit('message',message);
+}
+
+function getSocketsIdInCurrentRoom() {
+    let data = { id: video_id};
+    return new Promise((resolve)=>{
+        $.ajax({
+            url: 'http://localhost/api/v1/getSocketsInRoom',
+            data: data,
+            success: (result)=>{
+                return resolve(result);
+            }
+        });
+    });
 }

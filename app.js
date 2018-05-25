@@ -8,7 +8,7 @@ const port = process.env.PORT || 80;
 app.use(express.static('./views'));
 
 io.on('connection', function (socket) {
-    socketServer.eventsHandler(socket);
+    socketServer.eventsHandler(io, socket);
 });
 
 api.init(app);
