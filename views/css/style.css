@@ -7,10 +7,10 @@
 .room-link input {
     width: 75%;
 }
-.search {
-    margin-top: 28%;
-    display: inline-block;
-}
+/*.search {*/
+    /*margin-top: 28%;*/
+    /*display: inline-block;*/
+/*}*/
 .main-div {
     position: relative;
     top: 3em;
@@ -24,6 +24,9 @@
     position: absolute;
     margin: 0 25%;
     z-index: 1;
+}
+#inputURL {
+    margin-top: 25%;
 }
 h3 {
     margin-bottom: 1em;

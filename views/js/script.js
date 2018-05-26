@@ -81,6 +81,7 @@ function dontYouMissHome(onComplete=null){
 }
 
 function loadForm(){
+    showHiddenElement($("#inputURL"));
     showHiddenElement($(".search:not('.search button')"), ()=>{
         showHiddenElement($(".search button"));
         $("#inputURL").focus();
