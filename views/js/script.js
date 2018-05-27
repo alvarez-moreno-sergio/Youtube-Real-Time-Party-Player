@@ -34,12 +34,13 @@ function socketEventsHandler() {
     socket.on('joinResult', (response)=>shareLink(response));
     socket.on('videoPlaying', function (data) {
         remotePlayedVideo = true;
+        player.seekTo(data, true);
         player.playVideo();
-
     });
     socket.on('videoPaused', function (data) {
         remotePausedVideo = true;
         player.pauseVideo();
+        player.seekTo(data, true);
     });
     socket.on('message', (data)=>{
         alert(`[${data.from}]: ${data.message}`);
@@ -135,8 +136,14 @@ function createYTVideoPlayer(videoURL){
     $('#dialog').modal('show');
     $(".home").append($("<div id='player' class='hidden'></div>"));
 
-    let roomJoin = videoURL.indexOf('v=') === -1;
-    if (!roomJoin){
+    if (~videoURL.indexOf('youtu.be')){
+        // youtu.be/ASDgasd76gk
+        video_id = videoURL.substring(videoURL.lastIndexOf('/')+1);
+
+
+    }
+    else if (~videoURL.indexOf('v=')){
+        // youtube.com/v=ASDgasd76gk
         video_id = videoURL.split('v=')[1];
         let ampersandChar = video_id.indexOf('&');
         ampersandChar = ampersandChar!==-1?ampersandChar:video_id.length;
@@ -170,14 +177,14 @@ function onPlayerReady(event) {
 function onPlayerStateChange(event) {
     if (event.data === YT.PlayerState.PLAYING) {
         if (!remotePlayedVideo) {
-            socket.emit('videoPlaying', true);
+            socket.emit('videoPlaying', player.getCurrentTime());
         }
         else
             remotePlayedVideo = false;
     }
     else if (event.data === YT.PlayerState.PAUSED) {
         if (!remotePausedVideo) {
-            socket.emit('videoPaused', true);
+            socket.emit('videoPaused', player.getCurrentTime());
         }
         else
             remotePausedVideo = false;
