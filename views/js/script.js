@@ -157,6 +157,9 @@ function createYTVideoPlayer(videoURL){
         height: '390',
         width: '640',
         videoId: video_id,
+        playerVars: {
+            rel:0
+        },
         events: {
             'onReady': onPlayerReady,
             'onStateChange': onPlayerStateChange
