@@ -8,20 +8,42 @@ let remotePausedVideo = false;
 window.onload = function() {
     socket = io();
 
+    homeHandler();
     socketEventsHandler();
     loadPageMode();
 };
+
+function homeHandler() {
+    $("#home a").on('click',()=>{
+        socket.emit('leaveRoom',video_id);
+        hideElement($("#home, #player, .room-link"), ()=>{
+            $("#player").remove();
+            loadForm();
+
+            player = undefined;
+        });
+
+        try {
+            event.preventDefault();
+        }
+        catch (e) {}
+    });
+}
 
 function socketEventsHandler() {
     socket.on('joinResult', (response)=>shareLink(response));
     socket.on('videoPlaying', function (data) {
         remotePlayedVideo = true;
+        player.seekTo(data, true);
         player.playVideo();
-
     });
     socket.on('videoPaused', function (data) {
         remotePausedVideo = true;
         player.pauseVideo();
+        player.seekTo(data, true);
+    });
+    socket.on('message', (data)=>{
+        alert(`[${data.from}]: ${data.message}`);
     });
 }
 
@@ -39,8 +61,10 @@ function loadPageMode() {
             break;
         default:
             // loaded from room link
-            dontYouMissHome();
-            onYoutubePlayerAPIReady();
+            dontYouMissHome(
+                // on Complete
+                onYoutubePlayerAPIReady
+            );
     }
 }
 
@@ -53,59 +77,73 @@ function onYoutubePlayerAPIReady(){
     });
 }
 
-function dontYouMissHome(){
-    $('#home').removeClass('hidden');
+function dontYouMissHome(onComplete=null){
+    showHiddenElement($('#home'), onComplete);
 }
 
 function loadForm(){
-    $('.hidden:not("#home")').toggleClass('hidden');
+    showHiddenElement($("#inputURL"));
+    showHiddenElement($(".search:not('.search button')"), ()=>{
+        showHiddenElement($(".search button"));
+        $("#inputURL").focus();
+    });
 }
 
-function copyValueToClipboard(element) {
+function copyValueToClipboard(element, event) {
     let $temp = $("<input>");
     $("body").append($temp);
     $temp.val($(element).val()).select();
     document.execCommand("copy");
     $temp.remove();
+
+    try {
+        event.preventDefault();
+    }
+    catch (e) {}
 }
 
 function shareLink (response){
-    let port = window.location.port === ""?80:window.location.port;
-    let domainURL = `https://${window.location.host}:${port}/`;
+    let port = window.location.port === ":"?`:${window.location.port}`:'';
+    let domainURL = `${window.location.host}${port}/`;
 
-    $(".main-div").append(`
-                                <div class="container-fluid">
-                                    <div class="row">
-                                        <div class="col-md-12 room-link">
-                                            <input value="" readonly />
-                                            <a href="#">Copy me!</a>
-                                        </div>
-                                     </div>
-                                </div>
-        `);
     $(".room-link input").val(`${domainURL}?${response.param}`);
-    $('.room-link a').on('click', ()=>copyValueToClipboard($('.room-link input')));
+    $('.room-link a').on('click', (event)=>copyValueToClipboard($('.room-link input'), event));
 }
 
 function processURL(){
     let inputURL = $('#inputURL').val();
 
-    removeElementFromDOM($(".search"));
-    createYTVideoPlayer(inputURL);
-    newRoomEventHandler();
+    hideElement($(".search"), ()=>{
+        hideElement($(".search button"));
+        createYTVideoPlayer(inputURL);
+        newRoomEventHandler();
 
-    $('#home').toggleClass('hidden');
+        showHiddenElement($('#home'));
+    });
+
     return false;
 }
 
-function removeElementFromDOM(element){
-    $(element).hide('slow');
+function hideElement(element, onComplete = null){
+    $(element).hide('slow', onComplete);
+}
+
+function showHiddenElement(element, onComplete = null) {
+    $(element).show("slow",onComplete);
 }
 
 function createYTVideoPlayer(videoURL){
     $('#dialog').modal('show');
-    let roomJoin = videoURL.indexOf('v=') === -1;
-    if (!roomJoin){
+    $(".home").append($("<div id='player' class='hidden'></div>"));
+
+    if (~videoURL.indexOf('youtu.be')){
+        // youtu.be/ASDgasd76gk
+        video_id = videoURL.substring(videoURL.lastIndexOf('/')+1);
+
+
+    }
+    else if (~videoURL.indexOf('v=')){
+        // youtube.com/v=ASDgasd76gk
         video_id = videoURL.split('v=')[1];
         let ampersandChar = video_id.indexOf('&');
         ampersandChar = ampersandChar!==-1?ampersandChar:video_id.length;
@@ -119,6 +157,9 @@ function createYTVideoPlayer(videoURL){
         height: '390',
         width: '640',
         videoId: video_id,
+        playerVars: {
+            rel:0
+        },
         events: {
             'onReady': onPlayerReady,
             'onStateChange': onPlayerStateChange
@@ -127,22 +168,54 @@ function createYTVideoPlayer(videoURL){
 }
 
 function onPlayerReady(event) {
+    newRoomEventHandler();
+    $('#dialog').on('hidden.bs.modal', function (e) {
+        showHiddenElement($("#player"));
+        showHiddenElement($(".room-link"));
+    });
+
     $('#dialog').modal("hide");
 }
 
 function onPlayerStateChange(event) {
     if (event.data === YT.PlayerState.PLAYING) {
         if (!remotePlayedVideo) {
-            socket.emit('videoPlaying', true);
+            socket.emit('videoPlaying', player.getCurrentTime());
         }
         else
             remotePlayedVideo = false;
     }
     else if (event.data === YT.PlayerState.PAUSED) {
         if (!remotePausedVideo) {
-            socket.emit('videoPaused', true);
+            socket.emit('videoPaused', player.getCurrentTime());
         }
         else
             remotePausedVideo = false;
     }
+}
+
+function showMembersInCurrentRoom() {
+    let members = getSocketsIdInCurrentRoom();
+    members.then((socketIDs)=>{
+        socketIDs.forEach((elemID)=> {
+            $('#members').append($(`<li>${elemID}</li>`));
+        });
+    });
+}
+
+function sendMessage(message) {
+    socket.emit('message',message);
+}
+
+function getSocketsIdInCurrentRoom() {
+    let data = { id: video_id};
+    return new Promise((resolve)=>{
+        $.ajax({
+            url: 'http://localhost/api/v1/getSocketsInRoom',
+            data: data,
+            success: (result)=>{
+                return resolve(result);
+            }
+        });
+    });
 }

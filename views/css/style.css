@@ -1,40 +1,34 @@
-.container-fluid {
-    width: 75% !important;
-    margin-top: 2em;
-}
-
 .input-group-btn {
     margin-left: 5%;
 }
-
-iframe {
-    width: 853px;
-    height: 385px;
-}
-
-#inputURL {
-    width: 66% !important;
-}
-
-.room-link input {
-    width: 100%;
-}
-
-#dialog {
-    display: none;
-}
-
-#dialog {
-    /*display: block;*/
-     position: absolute;
-     top: 25%;
-     left: 35%;
-}
-
 .hidden {
     display: none;
 }
-
-h1 {
-    margin-bottom: 2%;
+.room-link input {
+    width: 75%;
+}
+/*.search {*/
+    /*margin-top: 28%;*/
+    /*display: inline-block;*/
+/*}*/
+.main-div {
+    position: relative;
+    top: 3em;
+    text-align: center;
+}
+/* =========================================================== */
+#player {
+    margin-top: 2em;
+}
+#dialog {
+    position: absolute;
+    margin: 0 25%;
+    z-index: 1;
+}
+#inputURL {
+    margin-top: 25%;
+}
+h3 {
+    margin-bottom: 1em;
+    text-align: center;
 }

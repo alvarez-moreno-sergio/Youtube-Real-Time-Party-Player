@@ -3,7 +3,11 @@
 <head>
     <!-- Required meta tags -->
     <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <!-- CSS Grid layout -->
+    <link href="css/grid-layout.css" rel="stylesheet">
 
     <!-- Bootstrap CSS -->
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
@@ -13,32 +17,40 @@
     <title>Youtube Real Time Party Player</title>
 </head>
 <body>
-    <div class="container-fluid">
-        <div class="row">
-            <div class="col-md-12 main-div">
-                <h1 class="text-center">Youtube Real Time Party Player</h1>
+    <div class="grid-container">
+        <div data-area="chat">
+            <ul id="members"></ul>
+        </div>
+        <div data-area="auxBottom"></div>
+        <div data-area="aux"></div>
+
+        <div data-area="content">
+            <div class="main-div">
+                <h3 class="text-center">Youtube Real Time Party Player</h3>
+                <div id="dialog" class="hidden" role="document">
+                    <img src="img/loading.gif">
+                </div>
                 <form action="#" method="POST" onsubmit="return processURL()">
-                    <div class="input-group search hidden">
-                        <input value="https://www.youtube.com/watch?v=dQw4w9WgXcQ" type="text" id="inputURL" name="inputURL" class="form-control" placeholder="Youtube URL" required autofocus autocomplete="off">
-                        <span class="input-group-btn">
-                            <button class="btn btn-dark btn-lg btn-primary btn-block" data-toggle="modal" data-target="#dialog" type="submit">Create room!</button>
-                        </span>
+                    <div class="search hidden">
+                            <input value="https://www.youtube.com/watch?v=ucZl6vQ_8Uo" type="text" id="inputURL" name="inputURL" class="hidden" placeholder="Youtube URL" required autocomplete="off">
+                            <button class="btn btn-dark hidden" data-toggle="modal" data-target="#dialog" type="submit">Create room!</button>
                     </div>
                 </form>
-                <div id="home" class="hidden col-md-12">
-                    <a id="homeLink" href="https://sleepy-ocean-86765.herokuapp.com/">
-                        <label for="homeLink">Don't you miss home?</label>
-                    </a>
+                <div class="home">
+                    <div id="home" class="hidden">
+                        <a id="homeLink" href="/"><i>Don't you miss home?</i></a>
+                    </div>
+                    <script id='youtubeAPI' src='http://www.youtube.com/player_api'></script>
                 </div>
-                <div id='player'></div>
-                <script id='youtubeAPI' src='http://www.youtube.com/player_api'></script>
+                <div class="room-link hidden">
+                    <input value="" readonly />
+                    <a href="#">Copy me!</a>
+                </div>
             </div>
         </div>
     </div>
 
-    <div id="dialog" class="modal-dialog " role="document">
-        <img src="img/loading.gif">
-    </div>
+    <script type="text/javascript"></script>
 
     <!-- Optional JavaScript -->
     <!-- jQuery first, then Popper.js, then Bootstrap JS -->
